@@ -3,17 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Creative Rater 🌸</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<title>Creative Rater — Kao</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --pink:#ffc8dd;--blue:#bde0fe;--purple:#cdb4db;--yellow:#fdffb6;--mint:#caffbf;
-  --deep-pink:#e8739c;--text:#7a4060;--subtext:#b08aaa;--bg1:#fce4f0;--bg2:#e8f6fd;
+  --kao-teal:#00B48C;
+  --kao-teal-dark:#008f6f;
+  --kao-teal-light:#e0f7f2;
+  --kao-teal-mid:#b3efe3;
+  --text:#1a1a1a;
+  --subtext:#5a7a74;
+  --bg:#f5fbf9;
+  --card-bg:#ffffff;
+  --border:#c2e8e0;
 }
 body{
-  font-family:'Lato',sans-serif;
-  background:linear-gradient(160deg,var(--bg1) 0%,#fff8fe 40%,var(--bg2) 100%);
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
   min-height:100vh; min-height:100dvh;
   display:flex; flex-direction:column; align-items:center;
   overflow-x:hidden;
@@ -22,33 +29,46 @@ body{
 /* ── SHARED ── */
 .view{display:none;width:100%;max-width:420px;min-height:100dvh;flex-direction:column;align-items:center;padding:32px 20px 40px;}
 .view.active{display:flex;}
-h1{font-family:'Playfair Display',serif;color:var(--deep-pink);font-size:2rem;text-align:center;margin-bottom:6px;}
-h2{font-family:'Playfair Display',serif;color:var(--text);font-size:1.4rem;margin-bottom:16px;}
-.sub{color:var(--subtext);font-size:.9rem;font-weight:300;letter-spacing:.5px;margin-bottom:28px;text-align:center;}
+h1{font-family:'Inter',sans-serif;font-weight:700;color:var(--kao-teal);font-size:1.9rem;text-align:center;margin-bottom:6px;letter-spacing:-.5px;}
+h2{font-family:'Inter',sans-serif;font-weight:700;color:var(--text);font-size:1.3rem;margin-bottom:16px;}
+.sub{color:var(--subtext);font-size:.88rem;font-weight:300;letter-spacing:.3px;margin-bottom:28px;text-align:center;}
 input[type=text]{
-  width:100%;padding:12px 16px;border:1.5px solid #f0c0d8;border-radius:14px;
-  font-size:1rem;font-family:'Lato',sans-serif;color:var(--text);
-  background:rgba(255,255,255,.85);outline:none;
-  transition:border .2s;margin-bottom:14px;
+  width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;
+  font-size:1rem;font-family:'Inter',sans-serif;color:var(--text);
+  background:var(--card-bg);outline:none;
+  transition:border .2s,box-shadow .2s;margin-bottom:14px;
 }
-input[type=text]:focus{border-color:var(--deep-pink);}
+input[type=text]:focus{border-color:var(--kao-teal);box-shadow:0 0 0 3px rgba(0,180,140,.12);}
 .btn{
   width:100%;padding:14px;border:none;border-radius:50px;
-  font-family:'Playfair Display',serif;font-size:1.1rem;letter-spacing:1px;
+  font-family:'Inter',sans-serif;font-size:1rem;font-weight:600;letter-spacing:.5px;
   cursor:pointer;transition:transform .15s,box-shadow .15s;
 }
-.btn-primary{background:linear-gradient(135deg,#f5a3c4,var(--deep-pink));color:#fff;box-shadow:0 4px 18px rgba(232,115,156,.3);}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,115,156,.4);}
-.btn-secondary{background:rgba(255,255,255,.8);border:1.5px solid #f0c0d8!important;color:var(--text);margin-top:10px;}
-.btn-secondary:hover{background:#fde8f0;}
+.btn-primary{background:var(--kao-teal);color:#fff;box-shadow:0 4px 18px rgba(0,180,140,.3);}
+.btn-primary:hover{transform:translateY(-2px);background:var(--kao-teal-dark);box-shadow:0 8px 24px rgba(0,180,140,.4);}
+.btn-secondary{background:var(--card-bg);border:1.5px solid var(--border)!important;color:var(--text);margin-top:10px;}
+.btn-secondary:hover{background:var(--kao-teal-light);}
+
+/* Kao logo bar */
+.kao-bar{
+  width:100%;max-width:420px;padding:16px 24px 0;
+  display:flex;align-items:center;gap:10px;
+}
+.kao-mark{
+  width:36px;height:36px;background:var(--kao-teal);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:1rem;letter-spacing:-.5px;flex-shrink:0;
+}
+.kao-wordmark{font-weight:700;font-size:.95rem;color:var(--kao-teal);letter-spacing:2px;}
+.kao-divider{width:100%;max-width:420px;height:1px;background:var(--border);margin-bottom:8px;}
 
 /* ── WELCOME ── */
-#welcome .logo{font-size:3rem;margin-bottom:8px;}
+#welcome .logo{font-size:2.8rem;margin-bottom:8px;}
 
 /* ── ADMIN ── */
 .item-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-bottom:20px;}
 .item-card{
-  background:rgba(255,255,255,.85);border:1.5px solid #f0c0d8;border-radius:14px;
+  background:var(--card-bg);border:1.5px solid var(--border);border-radius:12px;
   overflow:hidden;cursor:pointer;transition:transform .15s;position:relative;
 }
 .item-card:hover{transform:scale(1.02);}
@@ -64,14 +84,14 @@ input[type=text]:focus{border-color:var(--deep-pink);}
 /* ── SWIPE ── */
 #swipe-view{position:relative;justify-content:space-between;}
 .swipe-header{text-align:center;width:100%;margin-bottom:4px;}
-.voter-name{color:var(--subtext);font-size:.85rem;font-weight:300;}
-.progress-bar{width:100%;height:6px;background:rgba(240,176,208,.3);border-radius:10px;margin:10px 0 16px;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,#f5a3c4,var(--deep-pink));border-radius:10px;transition:width .3s;}
+.voter-name{color:var(--subtext);font-size:.85rem;font-weight:400;}
+.progress-bar{width:100%;height:5px;background:var(--kao-teal-light);border-radius:10px;margin:10px 0 16px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--kao-teal);border-radius:10px;transition:width .3s;}
 
 .card-stack{position:relative;width:100%;height:420px;flex-shrink:0;}
 .swipe-card{
-  position:absolute;inset:0;border-radius:24px;overflow:hidden;
-  background:#fff;box-shadow:0 8px 40px rgba(201,111,160,.18);
+  position:absolute;inset:0;border-radius:20px;overflow:hidden;
+  background:var(--card-bg);box-shadow:0 8px 40px rgba(0,100,80,.12);
   cursor:grab;user-select:none;touch-action:none;
   transition:box-shadow .2s;
 }
@@ -79,47 +99,47 @@ input[type=text]:focus{border-color:var(--deep-pink);}
 .swipe-card img{width:100%;height:100%;object-fit:cover;pointer-events:none;}
 .card-overlay{
   position:absolute;bottom:0;left:0;right:0;
-  background:linear-gradient(transparent,rgba(0,0,0,.55));
+  background:linear-gradient(transparent,rgba(0,0,0,.6));
   padding:40px 20px 20px;color:#fff;
 }
-.card-overlay h3{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:4px;}
+.card-overlay h3{font-family:'Inter',sans-serif;font-weight:700;font-size:1.3rem;margin-bottom:4px;}
 .card-overlay p{font-size:.85rem;opacity:.9;font-weight:300;}
 
 /* Vote badges */
 .vote-badge{
   position:absolute;top:24px;padding:8px 20px;border-radius:50px;
-  font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;
+  font-family:'Inter',sans-serif;font-size:1.2rem;font-weight:700;
   border:3px solid;opacity:0;transition:opacity .15s;pointer-events:none;
 }
 .vote-badge.like{left:20px;color:#4ade80;border-color:#4ade80;transform:rotate(-15deg);}
 .vote-badge.dislike{right:20px;color:#f87171;border-color:#f87171;transform:rotate(15deg);}
-.vote-badge.maybe{top:50%;left:50%;transform:translate(-50%,-50%);color:#facc15;border-color:#facc15;}
+.vote-badge.maybe{top:50%;left:50%;transform:translate(-50%,-50%);color:#fbbf24;border-color:#fbbf24;}
 
 /* Action buttons */
 .action-row{display:flex;justify-content:center;align-items:center;gap:20px;width:100%;padding:16px 0;}
 .action-btn{
   width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;font-size:1.6rem;
-  box-shadow:0 4px 16px rgba(0,0,0,.1);transition:transform .15s,box-shadow .15s;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s;
 }
-.action-btn:hover{transform:scale(1.12);box-shadow:0 6px 20px rgba(0,0,0,.15);}
+.action-btn:hover{transform:scale(1.12);box-shadow:0 6px 20px rgba(0,0,0,.12);}
 .action-btn.dislike{background:#fff0f0;border:2px solid #fca5a5;}
-.action-btn.maybe{background:#fefce8;border:2px solid #fde047;width:50px;height:50px;font-size:1.3rem;}
-.action-btn.like{background:#f0fdf4;border:2px solid #86efac;}
+.action-btn.maybe{background:#fffbeb;border:2px solid #fde68a;width:50px;height:50px;font-size:1.3rem;}
+.action-btn.like{background:var(--kao-teal-light);border:2px solid var(--kao-teal-mid);}
 .hint{color:var(--subtext);font-size:.78rem;text-align:center;font-weight:300;}
 
 /* ── RESULTS ── */
 #results-view{padding-bottom:60px;}
 .rank-item{
-  width:100%;background:rgba(255,255,255,.85);border:1.5px solid #f0c0d8;
-  border-radius:16px;overflow:hidden;display:flex;gap:14px;align-items:center;
-  padding:12px;margin-bottom:12px;box-shadow:0 2px 12px rgba(201,111,160,.08);
+  width:100%;background:var(--card-bg);border:1.5px solid var(--border);
+  border-radius:14px;overflow:hidden;display:flex;gap:14px;align-items:center;
+  padding:12px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,100,80,.06);
 }
 .rank-num{
-  font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--deep-pink);
+  font-family:'Inter',sans-serif;font-weight:700;font-size:1.7rem;color:var(--kao-teal);
   min-width:36px;text-align:center;
 }
-.rank-img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+.rank-img{width:64px;height:64px;border-radius:8px;object-fit:cover;flex-shrink:0;}
 .rank-info{flex:1;min-width:0;}
 .rank-label{font-weight:700;color:var(--text);font-size:.95rem;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .rank-desc{font-size:.75rem;color:var(--subtext);margin-bottom:6px;font-weight:300;}
@@ -127,12 +147,12 @@ input[type=text]:focus{border-color:var(--deep-pink);}
 .pill{
   padding:2px 9px;border-radius:20px;font-size:.73rem;font-weight:700;
 }
-.pill.like{background:#dcfce7;color:#16a34a;}
+.pill.like{background:#d1faf0;color:#007a5e;}
 .pill.maybe{background:#fef9c3;color:#a16207;}
 .pill.dislike{background:#fee2e2;color:#dc2626;}
 .score-bar{
-  height:5px;border-radius:10px;
-  background:linear-gradient(90deg,#f5a3c4,var(--deep-pink));
+  height:4px;border-radius:10px;
+  background:var(--kao-teal);
   margin-top:6px;transition:width .6s ease;
 }
 .total-voters{color:var(--subtext);font-size:.78rem;font-weight:300;text-align:center;margin-bottom:20px;}
@@ -140,9 +160,15 @@ input[type=text]:focus{border-color:var(--deep-pink);}
 </head>
 <body>
 
+<div class="kao-bar">
+  <div class="kao-mark">Kao</div>
+  <span class="kao-wordmark">KAO</span>
+</div>
+<div class="kao-divider"></div>
+
 <!-- WELCOME -->
 <div class="view active" id="welcome">
-  <div class="logo">🌸</div>
+  <div class="logo">🧴</div>
   <h1>Creative Rater</h1>
   <p class="sub">Swipe to vote on designs & products</p>
   <input type="text" id="voter-name" placeholder="Enter your name..." maxlength="30">
@@ -190,7 +216,7 @@ input[type=text]:focus{border-color:var(--deep-pink);}
 const TEST_ITEMS = [
   {id:'1', label:'Vitamin C Serum',     desc:'Brightening & antioxidant boost',   img:'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&h=560&fit=crop'},
   {id:'2', label:'Hydrating Moisturizer',desc:'24h deep moisture barrier',         img:'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&h=560&fit=crop'},
-  {id:'3', label:'Rose Water Toner',    desc:'Calming & pore-refining mist',       img:'https://images.unsplash.com/photo-1571781926291-c69fa5e02f7b?w=400&h=560&fit=crop'},
+  {id:'3', label:'Rose Water Toner',    desc:'Calming & pore-refining mist',       img:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=560&fit=crop'},
   {id:'4', label:'Retinol Eye Cream',   desc:'Anti-aging & dark circle reduction', img:'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=560&fit=crop'},
   {id:'5', label:'SPF 50 Sunscreen',    desc:'Lightweight broad-spectrum shield',  img:'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=560&fit=crop'},
   {id:'6', label:'Foam Cleanser',       desc:'Gentle deep-cleansing foam',         img:'https://images.unsplash.com/photo-1583241475880-083f84372725?w=400&h=560&fit=crop'},
