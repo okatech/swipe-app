@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Creative Rater 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --pink:#ffc8dd;--blue:#bde0fe;--purple:#cdb4db;--yellow:#fdffb6;--mint:#caffbf;
+  --deep-pink:#e8739c;--text:#7a4060;--subtext:#b08aaa;--bg1:#fce4f0;--bg2:#e8f6fd;
+}
+body{
+  font-family:'Lato',sans-serif;
+  background:linear-gradient(160deg,var(--bg1) 0%,#fff8fe 40%,var(--bg2) 100%);
+  min-height:100vh; min-height:100dvh;
+  display:flex; flex-direction:column; align-items:center;
+  overflow-x:hidden;
+}
+
+/* ── SHARED ── */
+.view{display:none;width:100%;max-width:420px;min-height:100dvh;flex-direction:column;align-items:center;padding:32px 20px 40px;}
+.view.active{display:flex;}
+h1{font-family:'Playfair Display',serif;color:var(--deep-pink);font-size:2rem;text-align:center;margin-bottom:6px;}
+h2{font-family:'Playfair Display',serif;color:var(--text);font-size:1.4rem;margin-bottom:16px;}
+.sub{color:var(--subtext);font-size:.9rem;font-weight:300;letter-spacing:.5px;margin-bottom:28px;text-align:center;}
+input[type=text]{
+  width:100%;padding:12px 16px;border:1.5px solid #f0c0d8;border-radius:14px;
+  font-size:1rem;font-family:'Lato',sans-serif;color:var(--text);
+  background:rgba(255,255,255,.85);outline:none;
+  transition:border .2s;margin-bottom:14px;
+}
+input[type=text]:focus{border-color:var(--deep-pink);}
+.btn{
+  width:100%;padding:14px;border:none;border-radius:50px;
+  font-family:'Playfair Display',serif;font-size:1.1rem;letter-spacing:1px;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+}
+.btn-primary{background:linear-gradient(135deg,#f5a3c4,var(--deep-pink));color:#fff;box-shadow:0 4px 18px rgba(232,115,156,.3);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,115,156,.4);}
+.btn-secondary{background:rgba(255,255,255,.8);border:1.5px solid #f0c0d8!important;color:var(--text);margin-top:10px;}
+.btn-secondary:hover{background:#fde8f0;}
+
+/* ── WELCOME ── */
+#welcome .logo{font-size:3rem;margin-bottom:8px;}
+
+/* ── ADMIN ── */
+.item-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-bottom:20px;}
+.item-card{
+  background:rgba(255,255,255,.85);border:1.5px solid #f0c0d8;border-radius:14px;
+  overflow:hidden;cursor:pointer;transition:transform .15s;position:relative;
+}
+.item-card:hover{transform:scale(1.02);}
+.item-card img{width:100%;height:110px;object-fit:cover;}
+.item-card .card-label{
+  padding:6px 8px;font-size:.8rem;font-weight:700;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.item-card .card-desc{padding:0 8px 8px;font-size:.72rem;color:var(--subtext);line-height:1.3;}
+.start-row{display:flex;gap:10px;width:100%;}
+.start-row .btn{flex:1;}
+
+/* ── SWIPE ── */
+#swipe-view{position:relative;justify-content:space-between;}
+.swipe-header{text-align:center;width:100%;margin-bottom:4px;}
+.voter-name{color:var(--subtext);font-size:.85rem;font-weight:300;}
+.progress-bar{width:100%;height:6px;background:rgba(240,176,208,.3);border-radius:10px;margin:10px 0 16px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f5a3c4,var(--deep-pink));border-radius:10px;transition:width .3s;}
+
+.card-stack{position:relative;width:100%;height:420px;flex-shrink:0;}
+.swipe-card{
+  position:absolute;inset:0;border-radius:24px;overflow:hidden;
+  background:#fff;box-shadow:0 8px 40px rgba(201,111,160,.18);
+  cursor:grab;user-select:none;touch-action:none;
+  transition:box-shadow .2s;
+}
+.swipe-card:active{cursor:grabbing;}
+.swipe-card img{width:100%;height:100%;object-fit:cover;pointer-events:none;}
+.card-overlay{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.55));
+  padding:40px 20px 20px;color:#fff;
+}
+.card-overlay h3{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:4px;}
+.card-overlay p{font-size:.85rem;opacity:.9;font-weight:300;}
+
+/* Vote badges */
+.vote-badge{
+  position:absolute;top:24px;padding:8px 20px;border-radius:50px;
+  font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;
+  border:3px solid;opacity:0;transition:opacity .15s;pointer-events:none;
+}
+.vote-badge.like{left:20px;color:#4ade80;border-color:#4ade80;transform:rotate(-15deg);}
+.vote-badge.dislike{right:20px;color:#f87171;border-color:#f87171;transform:rotate(15deg);}
+.vote-badge.maybe{top:50%;left:50%;transform:translate(-50%,-50%);color:#facc15;border-color:#facc15;}
+
+/* Action buttons */
+.action-row{display:flex;justify-content:center;align-items:center;gap:20px;width:100%;padding:16px 0;}
+.action-btn{
+  width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1.6rem;
+  box-shadow:0 4px 16px rgba(0,0,0,.1);transition:transform .15s,box-shadow .15s;
+}
+.action-btn:hover{transform:scale(1.12);box-shadow:0 6px 20px rgba(0,0,0,.15);}
+.action-btn.dislike{background:#fff0f0;border:2px solid #fca5a5;}
+.action-btn.maybe{background:#fefce8;border:2px solid #fde047;width:50px;height:50px;font-size:1.3rem;}
+.action-btn.like{background:#f0fdf4;border:2px solid #86efac;}
+.hint{color:var(--subtext);font-size:.78rem;text-align:center;font-weight:300;}
+
+/* ── RESULTS ── */
+#results-view{padding-bottom:60px;}
+.rank-item{
+  width:100%;background:rgba(255,255,255,.85);border:1.5px solid #f0c0d8;
+  border-radius:16px;overflow:hidden;display:flex;gap:14px;align-items:center;
+  padding:12px;margin-bottom:12px;box-shadow:0 2px 12px rgba(201,111,160,.08);
+}
+.rank-num{
+  font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--deep-pink);
+  min-width:36px;text-align:center;
+}
+.rank-img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+.rank-info{flex:1;min-width:0;}
+.rank-label{font-weight:700;color:var(--text);font-size:.95rem;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rank-desc{font-size:.75rem;color:var(--subtext);margin-bottom:6px;font-weight:300;}
+.vote-pills{display:flex;gap:5px;flex-wrap:wrap;}
+.pill{
+  padding:2px 9px;border-radius:20px;font-size:.73rem;font-weight:700;
+}
+.pill.like{background:#dcfce7;color:#16a34a;}
+.pill.maybe{background:#fef9c3;color:#a16207;}
+.pill.dislike{background:#fee2e2;color:#dc2626;}
+.score-bar{
+  height:5px;border-radius:10px;
+  background:linear-gradient(90deg,#f5a3c4,var(--deep-pink));
+  margin-top:6px;transition:width .6s ease;
+}
+.total-voters{color:var(--subtext);font-size:.78rem;font-weight:300;text-align:center;margin-bottom:20px;}
+</style>
+</head>
+<body>
+
+<!-- WELCOME -->
+<div class="view active" id="welcome">
+  <div class="logo">🌸</div>
+  <h1>Creative Rater</h1>
+  <p class="sub">Swipe to vote on designs & products</p>
+  <input type="text" id="voter-name" placeholder="Enter your name..." maxlength="30">
+  <button class="btn btn-primary" onclick="startVoting()">Start Voting →</button>
+  <button class="btn btn-secondary" onclick="showAdmin()">⚙ Admin Setup</button>
+  <button class="btn btn-secondary" style="margin-top:6px;" onclick="showResults()">📊 View Results</button>
+</div>
+
+<!-- ADMIN -->
+<div class="view" id="admin">
+  <h2>⚙ Session Setup</h2>
+  <p class="sub">Pre-loaded with skincare test images</p>
+  <div class="item-grid" id="admin-grid"></div>
+  <div class="start-row">
+    <button class="btn btn-secondary" onclick="clearVotes()" style="flex:.6;">🗑 Clear Votes</button>
+    <button class="btn btn-primary" onclick="showView('welcome')">✓ Done</button>
+  </div>
+</div>
+
+<!-- SWIPE -->
+<div class="view" id="swipe-view">
+  <div class="swipe-header">
+    <div class="voter-name" id="display-voter-name"></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+  <div class="card-stack" id="card-stack"></div>
+  <div class="action-row">
+    <button class="action-btn dislike" onclick="voteAction('dislike')" title="Dislike">👎</button>
+    <button class="action-btn maybe"  onclick="voteAction('maybe')"   title="Maybe">🤔</button>
+    <button class="action-btn like"   onclick="voteAction('like')"    title="Like">👍</button>
+  </div>
+  <div class="hint">← Dislike &nbsp;|&nbsp; ↑ Maybe &nbsp;|&nbsp; Like →</div>
+</div>
+
+<!-- RESULTS -->
+<div class="view" id="results-view">
+  <h2>🏆 Results</h2>
+  <div id="total-voters-label" class="total-voters"></div>
+  <div id="results-list" style="width:100%;"></div>
+  <button class="btn btn-primary" style="margin-top:8px;" onclick="showView('welcome')">← Back</button>
+</div>
+
+<script>
+// ── TEST DATA ──────────────────────────────────────────────
+const TEST_ITEMS = [
+  {id:'1', label:'Vitamin C Serum',     desc:'Brightening & antioxidant boost',   img:'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&h=560&fit=crop'},
+  {id:'2', label:'Hydrating Moisturizer',desc:'24h deep moisture barrier',         img:'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&h=560&fit=crop'},
+  {id:'3', label:'Rose Water Toner',    desc:'Calming & pore-refining mist',       img:'https://images.unsplash.com/photo-1571781926291-c69fa5e02f7b?w=400&h=560&fit=crop'},
+  {id:'4', label:'Retinol Eye Cream',   desc:'Anti-aging & dark circle reduction', img:'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=560&fit=crop'},
+  {id:'5', label:'SPF 50 Sunscreen',    desc:'Lightweight broad-spectrum shield',  img:'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=560&fit=crop'},
+  {id:'6', label:'Foam Cleanser',       desc:'Gentle deep-cleansing foam',         img:'https://images.unsplash.com/photo-1583241475880-083f84372725?w=400&h=560&fit=crop'},
+  {id:'7', label:'Collagen Sheet Mask', desc:'Firming & intensive hydration',      img:'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=560&fit=crop'},
+  {id:'8', label:'Hyaluronic Essence',  desc:'Multi-layer plumping hydration',     img:'https://images.unsplash.com/photo-1631730486572-226d1f595b68?w=400&h=560&fit=crop'},
+];
+
+// ── STATE ──────────────────────────────────────────────────
+function loadSession(){
+  const s = localStorage.getItem('creative_rater_session');
+  return s ? JSON.parse(s) : {items: TEST_ITEMS, votes: {}};
+}
+function saveSession(s){ localStorage.setItem('creative_rater_session', JSON.stringify(s)); }
+
+let session = loadSession();
+if(!session.items || session.items.length === 0){ session.items = TEST_ITEMS; saveSession(session); }
+
+let currentVoter = '';
+let currentIndex = 0;
+
+// ── NAVIGATION ─────────────────────────────────────────────
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function showAdmin(){
+  renderAdminGrid();
+  showView('admin');
+}
+
+function showResults(){
+  renderResults();
+  showView('results-view');
+}
+
+// ── ADMIN ──────────────────────────────────────────────────
+function renderAdminGrid(){
+  const grid = document.getElementById('admin-grid');
+  grid.innerHTML = '';
+  session.items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.innerHTML = `<img src="${item.img}" alt="${item.label}" loading="lazy"><div class="card-label">${item.label}</div><div class="card-desc">${item.desc}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function clearVotes(){
+  if(!confirm('Clear all votes? This cannot be undone.')) return;
+  session.votes = {};
+  saveSession(session);
+  alert('All votes cleared!');
+}
+
+// ── VOTING ─────────────────────────────────────────────────
+function startVoting(){
+  const name = document.getElementById('voter-name').value.trim();
+  if(!name){ document.getElementById('voter-name').focus(); return; }
+  currentVoter = name;
+  currentIndex = 0;
+  if(!session.votes[currentVoter]) session.votes[currentVoter] = {};
+  document.getElementById('display-voter-name').textContent = '👤 ' + currentVoter;
+  buildCardStack();
+  showView('swipe-view');
+}
+
+function buildCardStack(){
+  const stack = document.getElementById('card-stack');
+  stack.innerHTML = '';
+  const items = session.items;
+  // Render bottom 3 cards (visible as stack effect)
+  const visible = Math.min(3, items.length - currentIndex);
+  for(let i = visible-1; i >= 0; i--){
+    const idx = currentIndex + i;
+    if(idx >= items.length) continue;
+    const item = items[idx];
+    const card = document.createElement('div');
+    card.className = 'swipe-card';
+    card.id = 'card-' + idx;
+    const scale = 1 - i*0.04;
+    const translateY = i * 10;
+    card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+    card.style.zIndex = visible - i;
+    card.style.transition = i === 0 ? 'none' : 'transform .3s ease';
+    card.innerHTML = `
+      <img src="${item.img}" alt="${item.label}" draggable="false">
+      <div class="card-overlay">
+        <h3>${item.label}</h3>
+        <p>${item.desc}</p>
+      </div>
+      <div class="vote-badge like">LOVE IT</div>
+      <div class="vote-badge dislike">NOPE</div>
+      <div class="vote-badge maybe">MAYBE</div>
+    `;
+    if(i === 0) attachSwipe(card, idx);
+    stack.appendChild(card);
+  }
+  updateProgress();
+}
+
+function updateProgress(){
+  const total = session.items.length;
+  const pct = (currentIndex / total) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function voteAction(vote){
+  if(currentIndex >= session.items.length) return;
+  const item = session.items[currentIndex];
+  session.votes[currentVoter][item.id] = vote;
+  saveSession(session);
+  animateCardOut(vote, () => {
+    currentIndex++;
+    if(currentIndex >= session.items.length){
+      showResults();
+    } else {
+      buildCardStack();
+    }
+  });
+}
+
+function animateCardOut(vote, cb){
+  const card = document.querySelector('#card-stack .swipe-card:last-child');
+  if(!card) return cb();
+  let tx = 0, ty = 0, rot = 0;
+  if(vote === 'like')    { tx = 500; rot = 25; }
+  if(vote === 'dislike') { tx = -500; rot = -25; }
+  if(vote === 'maybe')   { ty = -500; }
+  card.style.transition = 'transform .4s ease, opacity .4s';
+  card.style.transform = `translate(${tx}px,${ty}px) rotate(${rot}deg)`;
+  card.style.opacity = '0';
+  setTimeout(cb, 380);
+}
+
+// ── SWIPE GESTURE ──────────────────────────────────────────
+function attachSwipe(card){
+  let startX=0, startY=0, curX=0, curY=0, dragging=false;
+  const THRESHOLD = 80;
+
+  function onStart(x,y){
+    startX=x; startY=y; curX=x; curY=y; dragging=true;
+    card.style.transition='none';
+  }
+  function onMove(x,y){
+    if(!dragging) return;
+    curX=x; curY=y;
+    const dx=curX-startX, dy=curY-startY;
+    const rot=dx*0.12;
+    card.style.transform=`translate(${dx}px,${dy}px) rotate(${rot}deg)`;
+    // Badge visibility
+    const like = card.querySelector('.vote-badge.like');
+    const dis  = card.querySelector('.vote-badge.dislike');
+    const may  = card.querySelector('.vote-badge.maybe');
+    like.style.opacity  = dx > 20 ? Math.min((dx-20)/60,1) : 0;
+    dis.style.opacity   = dx < -20 ? Math.min((-dx-20)/60,1) : 0;
+    may.style.opacity   = dy < -20 ? Math.min((-dy-20)/60,1) : 0;
+  }
+  function onEnd(){
+    if(!dragging) return;
+    dragging=false;
+    const dx=curX-startX, dy=curY-startY;
+    if(dx > THRESHOLD)       voteAction('like');
+    else if(dx < -THRESHOLD) voteAction('dislike');
+    else if(dy < -THRESHOLD) voteAction('maybe');
+    else {
+      card.style.transition='transform .35s cubic-bezier(.34,1.56,.64,1)';
+      card.style.transform='translate(0,0) rotate(0deg)';
+      card.querySelectorAll('.vote-badge').forEach(b=>b.style.opacity=0);
+    }
+  }
+
+  card.addEventListener('mousedown', e=>{ onStart(e.clientX,e.clientY); e.preventDefault(); });
+  document.addEventListener('mousemove', e=>{ if(dragging) onMove(e.clientX,e.clientY); });
+  document.addEventListener('mouseup',   ()=>onEnd());
+
+  card.addEventListener('touchstart', e=>{ const t=e.touches[0]; onStart(t.clientX,t.clientY); e.preventDefault(); },{passive:false});
+  card.addEventListener('touchmove',  e=>{ const t=e.touches[0]; onMove(t.clientX,t.clientY); e.preventDefault(); },{passive:false});
+  card.addEventListener('touchend',   ()=>onEnd());
+}
+
+// ── RESULTS ───────────────────────────────────────────────
+function renderResults(){
+  session = loadSession();
+  const voters = Object.keys(session.votes);
+  document.getElementById('total-voters-label').textContent =
+    voters.length === 0 ? 'No votes yet' : `${voters.length} voter${voters.length>1?'s':''}: ${voters.join(', ')}`;
+
+  const scored = session.items.map(item => {
+    let like=0,maybe=0,dislike=0;
+    voters.forEach(v => {
+      const v2 = (session.votes[v]||{})[item.id];
+      if(v2==='like') like++;
+      else if(v2==='maybe') maybe++;
+      else if(v2==='dislike') dislike++;
+    });
+    return {...item, like, maybe, dislike, score: like*2 + maybe*1};
+  }).sort((a,b)=>b.score-a.score);
+
+  const maxScore = scored[0]?.score || 1;
+  const list = document.getElementById('results-list');
+  list.innerHTML = '';
+
+  scored.forEach((item,i) => {
+    const medals = ['🥇','🥈','🥉'];
+    const rank = medals[i] || (i+1);
+    const barW = maxScore > 0 ? Math.round((item.score/maxScore)*100) : 0;
+    const el = document.createElement('div');
+    el.className = 'rank-item';
+    el.innerHTML = `
+      <div class="rank-num">${rank}</div>
+      <img class="rank-img" src="${item.img}" alt="${item.label}" loading="lazy">
+      <div class="rank-info">
+        <div class="rank-label">${item.label}</div>
+        <div class="rank-desc">${item.desc}</div>
+        <div class="vote-pills">
+          <span class="pill like">👍 ${item.like}</span>
+          <span class="pill maybe">🤔 ${item.maybe}</span>
+          <span class="pill dislike">👎 ${item.dislike}</span>
+        </div>
+        <div class="score-bar" style="width:${barW}%"></div>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+// ── INIT ───────────────────────────────────────────────────
+renderAdminGrid();
+</script>
+</body>
+</html>
